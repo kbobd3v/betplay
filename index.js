@@ -8,7 +8,7 @@ const port = 3000;
 // la solicitud y la respuesta como parametros y con send envia la respuesta
 // Es parecido al decorador @app.route en Flask
 app.get('/', (req, res) => {
-  res.send('El server funciona con express.js');
+  res.send('El server funciona con express.js!');
 });
 
 
