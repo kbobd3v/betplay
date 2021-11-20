@@ -38,11 +38,11 @@ router.get('/', (req, res) => {
 router.get('/filter', (req, res) => {
     res.send('La url filter funciona');
   });
-  
+
 // Recuerda que tenemos creado un route que toma el parametro id  luego de la ruta matches
 // Si agregamos los endpoints especificos despues de los dinamicos, la url no funcionará
-  
-  
+
+
 // desde la request podemos extraer parametros y usando destructuracion ECMAScript
 // tomamos el id para usarlo en nuestra response
 router.get('/:id', (req, res) => {
@@ -54,7 +54,7 @@ router.get('/:id', (req, res) => {
       equipo2 : 'españa',
     });
 });
-  
+
  // Tambien podemos crear urls mas complejas con los id que queramos
 router.get('/:matchId/bets/:betId', (req, res) => {
     const { matchId, betId } = req.params;
@@ -63,6 +63,17 @@ router.get('/:matchId/bets/:betId', (req, res) => {
       betId,
     });
 });
+
+// En el metodo post, para crear partidos, recibe los mismos parametros que get
+router.post('/', (req, res) => {
+  // Toma el contenido de la solicitud, el body
+  const body = req.body;
+  // Y lo envia como json en la respuesta con un mensaje exitoso
+  res.json({
+    message: 'Match created',
+    data: body
+  });
+})
 
 // Exportamos el router como un solo modulo
 module.exports = router;
