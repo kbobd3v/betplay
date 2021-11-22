@@ -4,7 +4,7 @@ COPY ["package.json", "package-lock.json" , "/usr/src/"]
 
 WORKDIR /usr/src
 
-RUN npm i --save
+RUN npm i
 
 COPY [".", "/usr/src"]
 

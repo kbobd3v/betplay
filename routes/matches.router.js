@@ -43,7 +43,8 @@ router.get('/filter', (req, res) => {
 // Si agregamos los endpoints especificos despues de los dinamicos, la url no funcionará
 
 
-// desde la request podemos extraer parametros y usando destructuracion ECMAScript
+// desde la request podemos extraer parametros (Los parametros se agregan en la url) 
+// y usando destructuracion ECMAScript
 // tomamos el id para usarlo en nuestra response
 router.get('/:id', (req, res) => {
     const { id } = req.params;
@@ -72,6 +73,32 @@ router.post('/', (req, res) => {
   res.json({
     message: 'Match created',
     data: body
+  });
+})
+
+// En el metodo patch es igual al metodo put, son para actualizar datos
+// put recibe todos los datos a actualizar
+// mientras que patch permite actualizar de manera parcial
+router.patch('/:id', (req, res) => {
+  // Toma el id desde los parametros de la solicitud
+  const { id } = req.params;
+  // Toma el contenido de la solicitud, el body
+  const body = req.body;
+  // Y lo envia como json en la respuesta con un mensaje exitoso
+  res.json({
+    message: 'match updated',
+    data: body,
+    id,
+  });
+})
+
+router.delete('/:id', (req, res) => {
+  // Toma el id desde los parametros de la solicitud
+  const { id } = req.params;
+  // Y lo envia como json en la respuesta con informacion del mesnsaje
+  res.json({
+    message: 'match deleted',
+    id,
   });
 })
 
