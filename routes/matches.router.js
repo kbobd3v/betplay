@@ -48,12 +48,23 @@ router.get('/filter', (req, res) => {
 // tomamos el id para usarlo en nuestra response
 router.get('/:id', (req, res) => {
     const { id } = req.params;
-    res.json({
+    // De esta manera podemos hacer el manejo de los errores http
+    // Si el id enviado por parametro en la url ej. http://localhost/api/v1/matches/999
+    // tiene como id '999' el estado de la respuesta sera 404
+    if (id === '999') {
+      res.status(404).json({
+        id,
+        mensaje: 'Partido no encontrado'
+      });
+    } else {
+      // de otra manera la respuesta estara con codigo de estado 200
+    res.status(200).json({
       id,
       id_partido : 2,
       equipo1 : 'ecuador',
-      equipo2 : 'españa',
+      equipo2 : 'españa'
     });
+  }
 });
 
  // Tambien podemos crear urls mas complejas con los id que queramos
@@ -70,7 +81,7 @@ router.post('/', (req, res) => {
   // Toma el contenido de la solicitud, el body
   const body = req.body;
   // Y lo envia como json en la respuesta con un mensaje exitoso
-  res.json({
+  res.status(201).json({
     message: 'Match created',
     data: body
   });
