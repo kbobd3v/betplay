@@ -8,7 +8,7 @@ RUN npm i
 
 COPY [".", "/usr/src"]
 
-EXPOSE 3000
+EXPOSE 8090
 
 CMD ["npm", "run", "dev"]
 

@@ -1,4 +1,6 @@
 const express = require('express');
+// Traemos nuestro esquema de mongoose para usarlo en las users.routes
+const userSchema = require('../models/user.js');
 // Como no instanciaremos la app, tomamos de express un router
 const router = express.Router();
 
