@@ -1,34 +1,20 @@
 // Importamos express para luego usar su constructor de app
 const express = require('express');
-// Importamos faker para usar informacion de prueba en nuestro project
-const faker = require('faker');
+// Importamos la clase MatchesService desde servicios para usarla en nuestras rutas
+const MatchesService = require('./../services/match.service');
 
 // Esta vez no instanciaremos la app
 // generamos un router especifico para matches
 // con esto seguimos el principio de Single Responsability
 const router = express.Router();
+// Como esta importada la clase MatchesService podemos instanciarla para usarla en las rutas
+const service = new MatchesService();
 
 // Usamos las queries para obtener la cantidad de informacion que queremos visualizar
 router.get('/', (req, res) => {
-    // Creamos un array vacio
-    const matches = [];
-    // Usamos destructuracion ECMAScript tomar los parametros de la query
-    const { size } = req.query;
-    // Si el parametro size no tiene ningun valor entonces limit tendra 10 por defecto
-    const limit = size || 10;
-    // Iteramos para agregar la info de prueba de los partidos al arreglo matches
-    for (let index = 0; index < limit; index++){
-      // el metodo push agrega lo que deseemos al arreglo que llama el metodo
-      matches.push({
-        // name, price e image son metodos que traen informacion de prueba de faker
-        name: faker.commerce.productName(),
-        // el metodo parseInt puede usarse con 2 parametros
-        // El primero es la info a parsear y el 2do es la base del integer
-        price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.imageUrl(),
-      });
-    }
-    // retornamos el json despues de agregar toda la info
+    // llenamos esta variable con la informacion de los partidos
+    const matches = service.find();
+    // Enviamos como respuesta los partidos en formato json
     res.json(matches);
   });
 
@@ -47,24 +33,13 @@ router.get('/filter', (req, res) => {
 // y usando destructuracion ECMAScript
 // tomamos el id para usarlo en nuestra response
 router.get('/:id', (req, res) => {
+    // El id es extraido de los parametros de la solicitud
     const { id } = req.params;
-    // De esta manera podemos hacer el manejo de los errores http
-    // Si el id enviado por parametro en la url ej. http://localhost/api/v1/matches/999
-    // tiene como id '999' el estado de la respuesta sera 404
-    if (id === '999') {
-      res.status(404).json({
-        id,
-        mensaje: 'Partido no encontrado'
-      });
-    } else {
-      // de otra manera la respuesta estara con codigo de estado 200
-    res.status(200).json({
-      id,
-      id_partido : 2,
-      equipo1 : 'ecuador',
-      equipo2 : 'españa'
-    });
-  }
+    // Como tenemos instanciado el servicio MatchesServices
+    // Usamos su metodo para traer el partido con el id de la solicitud
+    const match = service.findOne(id);
+    // Y lo enviamos en la respuesta en formato JSON
+    res.json(match);
 });
 
  // Tambien podemos crear urls mas complejas con los id que queramos
@@ -80,12 +55,12 @@ router.get('/:matchId/bets/:betId', (req, res) => {
 router.post('/', (req, res) => {
   // Toma el contenido de la solicitud, el body
   const body = req.body;
-  // Y lo envia como json en la respuesta con un mensaje exitoso
-  res.status(201).json({
-    message: 'Match created',
-    data: body
-  });
-})
+  // Creamos una variable que instancia el metodo create desde el servicio, con el body de la solicitud post como parametro
+  const newMatch = service.create(body);
+  // Y la enviamos como json en la respuesta con un mensaje exitoso
+  // Para que el frontend reciba la informacion completa del objeto creado
+  res.status(201).json(newMatch);
+});
 
 // En el metodo patch es igual al metodo put, son para actualizar datos
 // put recibe todos los datos a actualizar
@@ -95,22 +70,20 @@ router.patch('/:id', (req, res) => {
   const { id } = req.params;
   // Toma el contenido de la solicitud, el body
   const body = req.body;
+  // instanciamos el metodo update de nuestro servicio de matches o partidos
+  // Con los 2 parametros que necesita para ejecutarse
+  const match = service.update(id, body);
   // Y lo envia como json en la respuesta con un mensaje exitoso
-  res.json({
-    message: 'match updated',
-    data: body,
-    id,
-  });
+  res.json(match);
 })
 
 router.delete('/:id', (req, res) => {
   // Toma el id desde los parametros de la solicitud
   const { id } = req.params;
-  // Y lo envia como json en la respuesta con informacion del mesnsaje
-  res.json({
-    message: 'match deleted',
-    id,
-  });
+  // instanciamos el metodo delete de nuestro servicio de matches o partidos enviando el id
+  const respuesta = service.delete(id);
+  // Y lo envia como json lo que nos devuelva respuesta
+  res.json(respuesta);
 })
 
 // Exportamos el router como un solo modulo
