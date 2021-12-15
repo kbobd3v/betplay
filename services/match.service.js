@@ -31,7 +31,7 @@ class MatchesService {
 }
 
 // El metodo create usará data como parametro
-create(data) {
+async create(data) {
     // Creamos una nueva variable tipo objeto
     const newMatch = {
         // Desde faker traemos el id, es decir el match que se va a crear tendra un id por defecto
@@ -50,18 +50,28 @@ create(data) {
 
 // El metodo find nos devuelve todos los partidos del array matches de la clase
 find() {
-  return this.matches;
+    // Retornará una promesa
+    // Las promesas requieren una funcion flecha, esta funcion recibe 2 parametros, resolve si se resuelve la promesa
+    // y reject si no
+    return new Promise((resolve, reject) =>{
+        // Definimos un timeout para que se resuelva la promesa
+        // timeout recibe 2 parametros, el primero es la funcion flecha con la logica de la promesa a ejecutar
+        // y el segundo es el tiempo (en milisegundos) que esperará para resolver nuestra logica
+        setTimeout(() => {
+            resolve(this.matches);
+        }, 5000); // 1000 milisegundos equivalen a 1 segundo
+    })
 }
 
 // Para el metodo findOne trabajaremos con el parametro id que se trae directamente
 // De las propiedades del partido
-findOne(id) {
+async findOne(id) {
     // El metodo find nos trae todos partidos
     // Usamos una funcion flecha para que nos retorne el partido con el id que pasamos por parametro
     return this.matches.find(item => item.id === id);
 }
 // Update tambien usa el id, que vendra del body de la request
-update(id, changes) {
+async update(id, changes) {
     // Usamos el metodo findIndex para buscar la ubicacion de nuestro partido
     // en el array de partidos
     // Si no encuentra el partido porque no encuentra el id el valor de index será -1
@@ -83,7 +93,7 @@ update(id, changes) {
     return this.matches[index];
 }
 
-delete(id) {
+async delete(id) {
     // Usamos el metodo findIndex para buscar la ubicacion de nuestro partido
     // en el array de partidos
     // Si no encuentra el partido porque no encuentra el id el valor de index será -1
@@ -101,4 +111,5 @@ delete(id) {
 
 }
 
+// Exportamos la clase para poder instanciarla donde necesitemos
 module.exports = MatchesService;
