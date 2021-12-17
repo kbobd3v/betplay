@@ -29,10 +29,11 @@ router.get('/filter', (req, res) => {
 // Si agregamos los endpoints especificos despues de los dinamicos, la url no funcionará
 
 
-// desde la request podemos extraer parametros (Los parametros se agregan en la url) 
+// desde la request podemos extraer parametros (Los parametros se agregan en la url)
 // y usando destructuracion ECMAScript
 // tomamos el id para usarlo en nuestra response
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
+  try {
     // El id es extraido de los parametros de la solicitud
     const { id } = req.params;
     // Como tenemos instanciado el servicio MatchesServices
@@ -40,7 +41,11 @@ router.get('/:id', async (req, res) => {
     const match = await service.findOne(id);
     // Y lo enviamos en la respuesta en formato JSON
     res.json(match);
-});
+    // si se lanza un error, se lo enviamos al siguiente middleware
+    } catch (error) {
+      next(error);
+    }
+  });
 
  // Tambien podemos crear urls mas complejas con los id que queramos
 router.get('/:matchId/bets/:betId', (req, res) => {
@@ -77,9 +82,7 @@ router.patch('/:id', async (req, res) => {
     // Y lo envia como json en la respuesta con un mensaje exitoso
   res.json(match);
   } catch (error) {
-    res.status(404).json({
-      message: error.message
-    });
+    next(error);
   }
 
 });

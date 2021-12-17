@@ -1,16 +1,17 @@
 // Importamos faker para usar informacion de prueba en los partidos
+const boom = require('@hapi/boom');
 const faker = require('faker');
 
 // Creamos una clase para iniciar el Servicio de partidos o matches
 class MatchesService {
-    // Generamos un constructor para definir la estructura de la clase 
+    // Generamos un constructor para definir la estructura de la clase
     constructor(){
         // Iniciamos con un array vacio para nuestros partidos
         this.matches = [];
         // Cada vez que generemos una instancia del servicio va a generar esos 100 partidos
         this.generate();
     }
-    
+
     // Creamos el metodo generate para crear nuestros partidos
     generate() {
         // Como usaremos faker, definimos el limite en 100 para que agregue esa cantidad por defecto
@@ -26,6 +27,8 @@ class MatchesService {
         // El primero es la info a parsear y el 2do es la base del integer
         price: parseInt(faker.commerce.price(), 10),
         image: faker.image.imageUrl(),
+        // agregamos un nuebo atributo randomico de tipo booleano para hacer pruebas
+        isBlocked : faker.datatype.boolean(),
       });
    }
 }
@@ -66,9 +69,16 @@ find() {
 // Para el metodo findOne trabajaremos con el parametro id que se trae directamente
 // De las propiedades del partido
 async findOne(id) {
-    // El metodo find nos trae todos partidos
     // Usamos una funcion flecha para que nos retorne el partido con el id que pasamos por parametro
-    return this.matches.find(item => item.id === id);
+    const match = this.matches.find(item => item.id === id);
+    if (!match) {
+      throw boom.notFound('Partido no encontrado');
+    }
+    // Si nuestro partido esta bloqueado o isBlocked: True, nos lanzara un error 409 de tipo conflict
+    if (match.isBlocked) {
+      throw boom.conflict('Partido bloqueado');
+    }
+    return match;
 }
 // Update tambien usa el id, que vendra del body de la request
 async update(id, changes) {
@@ -78,7 +88,7 @@ async update(id, changes) {
     const index = this.matches.findIndex(item => item.id === id);
     // Si no lo encuentra, lanzará un error
     if (index == -1) {
-        throw new Error('Partido no encontrado');
+        throw boom.notFound('Partido no encontrado');
     }
     // Ya tenemos el elemento que vamos a actualizar con su index en el arreglo
     const match = this.matches[index];
@@ -100,7 +110,7 @@ async delete(id) {
     const index = this.matches.findIndex(item => item.id === id);
     // Si no lo encuentra, lanzará un error
     if (index == -1) {
-        throw new Error('Partido no encontrado');
+        throw boom.notFound('Partido no encontrado');
     }
     // si lo encuentra, el metodo splice tomará index para eliminar el elemento de esa posicion
     // en el array y como segundo parametro le pasamos 1, para que solo elimine un elemento desde la posicion del index

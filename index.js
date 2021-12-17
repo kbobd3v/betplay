@@ -4,6 +4,8 @@ const express = require('express');
 require("dotenv").config();
 const routerApi = require('./routes');
 const app = express();
+// importamos los middleware para capturar errores
+const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler')
 // Buscamos dentro del archivo env la variable PORT
 const port = process.env.PORT || 9000;
 
@@ -22,6 +24,13 @@ app.get('/', (req, res) => {
 // que usa como parametro la app, entonces la llamamos
 // routerApi define cada uno de los endpoints que creamos
 routerApi(app);
+
+// Es importante la posicion de ejecucion, ya que si uno de tus middleware iniciales no tiene el parametro next, no seguira ejecutandolos
+app.use(logErrors);
+// ejecutamos boom primero ya que de no ser error boom pasa al siguiente middleware
+app.use(boomErrorHandler);
+app.use(errorHandler);
+
 
 // mongoose es una especie de middleware que nos ayuda a organizar la informacion (Usando schemas) que se enviará a la base de datos
 const mongoose = require('mongoose');
