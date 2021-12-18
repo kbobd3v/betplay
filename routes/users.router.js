@@ -1,18 +1,21 @@
 const express = require('express');
+const { registerUser } = require('../controllers/user.controller')
 // Traemos nuestro esquema de mongoose para usarlo en las users.routes
 const userSchema = require('../models/user.js');
 // Como no instanciaremos la app, tomamos de express un router
 const router = express.Router();
 
 //crear user
-router.post("/", (req, res) => {
-  const user = userSchema(req.body);
 
-  user
-  .save()
-  .then((data) => res.json(data))
-  .catch((error) =>  res.json({ message: error }))
-});
+router.route("/").post(registerUser);
+// router.post("/", (req, res) => {
+//   const user = userSchema(req.body);
+
+//   user
+//   .save()
+//   .then((data) => res.json(data))
+//   .catch((error) =>  res.json({ message: error }))
+// });
 
 //listar todos
 router.get("/", (req, res) => {
