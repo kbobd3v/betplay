@@ -3,6 +3,8 @@ const express = require('express')
 , cors = require('cors');
 // Importamos la clase MatchesService desde servicios para usarla en nuestras rutas
 const MatchesService = require('./../services/match.service');
+const validatorHandler = require('./../middlewares/validator.handler');
+const { createMatchSchema, updateMatchSchema, getMatchSchema } = require('./../schemas/match.schema');
 
 // Esta vez no instanciaremos la app
 // generamos un router especifico para matches
@@ -35,7 +37,9 @@ router.get('/filter', (req, res) => {
 // desde la request podemos extraer parametros (Los parametros se agregan en la url)
 // y usando destructuracion ECMAScript
 // tomamos el id para usarlo en nuestra response
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', 
+validatorHandler(getMatchSchema, 'params'),
+async (req, res, next) => {
   try {
     // El id es extraido de los parametros de la solicitud
     const { id } = req.params;
@@ -60,7 +64,9 @@ router.get('/:matchId/bets/:betId', (req, res) => {
 });
 
 // En el metodo post, para crear partidos, recibe los mismos parametros que get
-router.post('/', async (req, res) => {
+router.post('/',
+ validatorHandler(createMatchSchema, 'body'),
+ async (req, res) => {
   // Toma el contenido de la solicitud, el body
   const body = req.body;
   // Creamos una variable que instancia el metodo create desde el servicio, con el body de la solicitud post como parametro
@@ -73,8 +79,11 @@ router.post('/', async (req, res) => {
 // En el metodo patch es igual al metodo put, son para actualizar datos
 // put recibe todos los datos a actualizar
 // mientras que patch permite actualizar de manera parcial
-router.patch('/:id', async (req, res) => {
-  try {
+router.patch('/:id',
+  validatorHandler(getMatchSchema, 'params'),
+  validatorHandler(updateMatchSchema, 'body'),
+  async (req, res, next) => {
+    try {
     // Toma el id desde los parametros de la solicitud
     const { id } = req.params;
     // Toma el contenido de la solicitud, el body
@@ -83,11 +92,10 @@ router.patch('/:id', async (req, res) => {
     // Con los 2 parametros que necesita para ejecutarse
     const match = await service.update(id, body);
     // Y lo envia como json en la respuesta con un mensaje exitoso
-  res.json(match);
-  } catch (error) {
+   res.json(match);
+   } catch (error) {
     next(error);
   }
-
 });
 
 router.delete('/:id', async (req, res) => {

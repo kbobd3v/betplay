@@ -62,7 +62,7 @@ find() {
         // y el segundo es el tiempo (en milisegundos) que esperará para resolver nuestra logica
         setTimeout(() => {
             resolve(this.matches);
-        }, 5000); // 1000 milisegundos equivalen a 1 segundo
+        }, 2000); // 1000 milisegundos equivalen a 1 segundo
     })
 }
 
