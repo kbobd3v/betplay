@@ -1,15 +1,18 @@
 const express = require('express');
-const { registerUser } = require('../controllers/user.controller')
+const { registerUser, authUser } = require('../controllers/user.controller')
 // Traemos nuestro esquema de mongoose para usarlo en las users.routes
-const userSchema = require('../models/user.js');
+const User = require('../models/user');
 // Como no instanciaremos la app, tomamos de express un router
 const router = express.Router();
 
 //crear user
 
 router.route("/").post(registerUser);
+
+router.route("/login").post(authUser);
+
 // router.post("/", (req, res) => {
-//   const user = userSchema(req.body);
+//   const user = User(req.body);
 
 //   user
 //   .save()
@@ -19,7 +22,7 @@ router.route("/").post(registerUser);
 
 //listar todos
 router.get("/", (req, res) => {
-  userSchema
+  User
   .find()
   .then((data) => res.json(data))
   .catch((error) => res.json({ message: error }))
@@ -29,7 +32,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   const { id } = req.params;
 
-  userSchema
+  User
   .findById(id)
   .then((data) => res.json(data))
   .catch((error) => res.json({ message: error }))
@@ -40,7 +43,7 @@ router.put("/:id", (req, res) => {
   const { id } = req.params;
   const { name, age, email } = req.body;
 
-  userSchema
+  User
   .updateOne( {_id: id},  { $set: { name, age, email }})
   .then((data) => res.json(data))
   .catch((error) => res.json({ message: error }))
@@ -50,7 +53,7 @@ router.put("/:id", (req, res) => {
 //eliminar un usuario
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
-  userSchema
+  User
   .remove({ _id: id })
   .then((data) => res.json(data))
   .catch((error) =>  res.json({ message: error }))
