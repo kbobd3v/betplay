@@ -1,5 +1,6 @@
 // Importamos express para luego usar su constructor de app
-const express = require('express');
+const express = require('express')
+, cors = require('cors');
 // Importamos la clase MatchesService desde servicios para usarla en nuestras rutas
 const MatchesService = require('./../services/match.service');
 
@@ -7,6 +8,8 @@ const MatchesService = require('./../services/match.service');
 // generamos un router especifico para matches
 // con esto seguimos el principio de Single Responsability
 const router = express.Router();
+
+router.use(cors());
 // Como esta importada la clase MatchesService podemos instanciarla para usarla en las rutas
 const service = new MatchesService();
 
@@ -16,7 +19,7 @@ router.get('/', async (req, res) => {
     const matches = await service.find();
     // Enviamos como respuesta los partidos en formato json
     res.json(matches);
-  });
+      });
 
 // Mandamiento
 //Los endpoints especificos deben declararse antes de los endpoints dinamicos.
