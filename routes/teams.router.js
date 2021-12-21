@@ -8,6 +8,7 @@ const collection = require('../models/team');
 // con esto seguimos el principio de Single Responsability
 const router = express.Router();
 
+router.use(cors());
 
 // Usamos las queries para obtener la cantidad de informacion que queremos visualizar
 router.get('/', async (req, res) => {
