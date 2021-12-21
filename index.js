@@ -4,10 +4,17 @@ const express = require('express');
 require("dotenv").config();
 const routerApi = require('./routes');
 const app = express();
+const cron = require('node-cron');
+const randomTeamsMatch = require('./controllers/matches.controller');
 // importamos los middleware para capturar errores
 const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler')
 // Buscamos dentro del archivo env la variable PORT
 const port = process.env.PORT || 9000;
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 // Usamos el middleware express.json para poder recibir informacion en ese formato mediante el metodo post y demas
@@ -47,4 +54,14 @@ mongoose.connect(process.env.MONGODB_URI)
 app.listen(port, () => {
   console.log('Servidor corriendo en el puerto: ' + port);
 });
+
+// cron.schedule('* * * * *', () => {
+//   try {
+//       randomTeamsMatch();
+//   } catch (error){
+//       console.log(error);
+//   }
+// }, {
+//   scheduled: true
+// });
 

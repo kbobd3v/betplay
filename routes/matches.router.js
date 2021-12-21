@@ -5,6 +5,7 @@ const express = require('express')
 const MatchesService = require('./../services/match.service');
 const validatorHandler = require('./../middlewares/validator.handler');
 const { createMatchSchema, updateMatchSchema, getMatchSchema } = require('./../schemas/match.schema');
+const collection = require('../models/matches');
 
 // Esta vez no instanciaremos la app
 // generamos un router especifico para matches
@@ -18,7 +19,7 @@ const service = new MatchesService();
 // Usamos las queries para obtener la cantidad de informacion que queremos visualizar
 router.get('/', async (req, res) => {
     // llenamos esta variable con la informacion de los partidos
-    const matches = await service.find();
+    const matches = await collection.find();
     // Enviamos como respuesta los partidos en formato json
     res.json(matches);
       });

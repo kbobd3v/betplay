@@ -1,0 +1,61 @@
+{  
+    "swagger": "2.0",
+    "info": {
+      "title": "some-app",
+      "version": "Unknown"
+    },
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/{id}": {
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "type": "string",
+            "description": "some id"
+          }
+        ],
+        "get": {
+          "operationId": "routeWithId",
+          "summary": "some route",
+          "description": "some route",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "200 response",
+              "examples": {
+                "application/json": "{ foo: 1 }"
+              }
+            }
+          }
+        }
+      },
+      "/": {
+        "parameters": [],
+        "get": {
+          "operationId": "anotherRoute",
+          "summary": "another route",
+          "description": "another route",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "202": {
+              "description": "202 response",
+              "examples": {
+                "application/json": "{ foo: 'bar' }"
+              }
+            }
+          }
+        }      
+      }
+    }
+  }

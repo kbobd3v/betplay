@@ -4,10 +4,12 @@ const { registerUser, authUser } = require('../controllers/user.controller')
 const User = require('../models/user');
 // Como no instanciaremos la app, tomamos de express un router
 const router = express.Router();
+const cors = require('cors');
+router.use(cors());
 
 //crear user
 
-router.route("/").post(registerUser);
+router.route("/register").post(registerUser);
 
 router.route("/login").post(authUser);
 
