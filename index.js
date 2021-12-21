@@ -6,6 +6,7 @@ const routerApi = require('./routes');
 const app = express();
 const cron = require('node-cron');
 const randomTeamsMatch = require('./controllers/matches.controller');
+const createTeams = require("./controllers/team.controller");
 // importamos los middleware para capturar errores
 const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler')
 // Buscamos dentro del archivo env la variable PORT
@@ -65,3 +66,4 @@ app.listen(port, () => {
 //   scheduled: true
 // });
 
+// createTeams();
